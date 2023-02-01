@@ -1,2 +1,6 @@
 # Project exclude paths
 /.gradle/
+/.idea/jarRepositories.xml
+/build/tmp/compileJava/previous-compilation-data.bin
+/.idea/uiDesigner.xml
+/.idea/vcs.xml
