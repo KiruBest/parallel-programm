@@ -31,7 +31,7 @@ public class Lab1 {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }
