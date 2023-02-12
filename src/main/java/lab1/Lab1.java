@@ -1,13 +1,15 @@
+package lab1;
+
+import utils.ImageUtils;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Lab1 {
-    private static final String IMG_PATH = "D:\\Programmist\\Java\\Works\\parallel-programm\\src\\main\\java\\img\\";
-    private static final String INVERTED_IMG = "inverted\\";
-    private static final String CONTRAST_IMG = "contrasted\\";
+import static constants.Path.*;
 
+public class Lab1 {
     public static void main(String[] args) {
         try {
             File imgFolder = new File(IMG_PATH);
@@ -23,9 +25,13 @@ public class Lab1 {
 
                         long time = System.currentTimeMillis();
                         Color[][] colorArray = ImageUtils.extractBytes(IMG_PATH + fileName);
-                        ImageUtils.invertedImage(colorArray, IMG_PATH + INVERTED_IMG + fileName);
-                        ImageUtils.transformImage(colorArray, ImageUtils.contrastMatrix,
-                                IMG_PATH + CONTRAST_IMG + fileName);
+
+                        Color[][] invertedColorArray = ImageUtils.invertedImage(colorArray);
+                        ImageUtils.saveImage(invertedColorArray, IMG_PATH + INVERTED_IMG_PATH + fileName);
+
+                        Color[][] transformedColorArray = ImageUtils.transformImage(colorArray,
+                                ImageUtils.contrastMatrix);
+                        ImageUtils.saveImage(transformedColorArray, IMG_PATH + CONTRAST_IMG_PATH + fileName);
 
                         System.out.println("Время обработки = " + (System.currentTimeMillis() - time) + "\n");
                     }

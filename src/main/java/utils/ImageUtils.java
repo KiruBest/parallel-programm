@@ -1,3 +1,5 @@
+package utils;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -28,7 +30,7 @@ public class ImageUtils {
         return pixelMatrix;
     }
 
-    public static Color[][] invertedImage(Color[][] colorArray, String fileName) throws IOException {
+    public static Color[][] invertedImage(Color[][] colorArray) throws IOException {
         int width = colorArray.length;
         int height = colorArray[0].length;
         Color[][] invertedColorArray = new Color[width][height];
@@ -44,12 +46,10 @@ public class ImageUtils {
             }
         }
 
-        saveImage(invertedColorArray, fileName);
-
         return invertedColorArray;
     }
 
-    public static Color[][] transformImage(Color[][] colorArray, int[][] transformMatrix, String fileName)
+    public static Color[][] transformImage(Color[][] colorArray, int[][] transformMatrix)
             throws IOException {
         int transformMatrixSize = transformMatrix.length;
         int width = colorArray.length;
@@ -81,12 +81,10 @@ public class ImageUtils {
             }
         }
 
-
-        saveImage(transformedColorArray, fileName);
         return transformedColorArray;
     }
 
-    private static void saveImage(Color[][] colorArray, String fileName) throws IOException {
+    public static void saveImage(Color[][] colorArray, String fileName) throws IOException {
         int width = colorArray.length;
         int height = colorArray[0].length;
         BufferedImage bufferedImage = new BufferedImage(width, height, TYPE_INT_RGB);
