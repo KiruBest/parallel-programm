@@ -88,6 +88,7 @@ public class A {
         boolean isSuccess = executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 
         if (isSuccess) {
+            System.out.println("Время обработки = " + (System.currentTimeMillis() - time) + "\n");
             ImageUtils.saveImage(
                     invertedRequest.getColorArray(),
                     IMG_PATH + INVERTED_IMG_PATH + fileName
@@ -96,7 +97,6 @@ public class A {
                     contrastedRequest.getColorArray(),
                     IMG_PATH + CONTRAST_IMG_PATH + fileName
             );
-            System.out.println("Время обработки = " + (System.currentTimeMillis() - time) + "\n");
         }
     }
 }
