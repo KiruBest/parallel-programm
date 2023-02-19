@@ -7,7 +7,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadExtensions {
-    public static ExecutorService createThreads(Color[][] colorArray, int threadCount, ProcessorRunnableCallback callback) {
+    public static ExecutorService createThreads(
+            Color[][] colorArray,
+            int threadCount,
+            ProcessorRunnableCallback callback) {
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         int partWidth = colorArray.length / threadCount;
         for (int j = 0; j < threadCount; j++) {

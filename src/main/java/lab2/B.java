@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import static constants.Path.*;
 
 public class B {
-    private static final int THREAD_COUNT = 1;
+    private static final int THREAD_COUNT = 2;
 
     public static void main(String[] args) {
         try {
@@ -40,14 +40,14 @@ public class B {
 
         Color[][] colorArray = ImageUtils.extractBytes(IMG_PATH + fileName);
 
-        Request invertedRequest = new Request();
+        Request enlargeRequest = new Request();
 
         long time = System.nanoTime();
 
         ExecutorService executor = ThreadExtensions.createThreads(
                 colorArray,
                 THREAD_COUNT,
-                (part, position) -> new ProcessorB(part, position, invertedRequest)
+                (part, position) -> new ProcessorB(part, position, enlargeRequest)
         );
 
         boolean isSuccess = ThreadExtensions.awaitAllThreads(executor);
@@ -55,7 +55,7 @@ public class B {
         if (isSuccess) {
             System.out.println("Время обработки = " + (System.nanoTime() - time) + "\n");
             ImageUtils.saveImage(
-                    invertedRequest.getColorArray(),
+                    enlargeRequest.getColorArray(),
                     IMG_PATH + ENLARGE_IMG_PATH + fileName
             );
         }

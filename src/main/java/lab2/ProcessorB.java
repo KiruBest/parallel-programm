@@ -9,17 +9,17 @@ import java.awt.*;
 class ProcessorB implements Runnable {
     private final Color[][] colorArray;
     private final int position;
-    private final Request invertedRequest;
+    private final Request enlargeRequest;
 
-    ProcessorB(Color[][] colorArray, int position, Request invertedRequest) {
+    ProcessorB(Color[][] colorArray, int position, Request enlargeRequest) {
         this.colorArray = colorArray;
         this.position = position;
-        this.invertedRequest = invertedRequest;
+        this.enlargeRequest = enlargeRequest;
     }
 
     @Override
     public void run() {
         Color[][] invertedImage = ImageUtils.enlargeImage(colorArray);
-        invertedRequest.addColorArray(new NumberedColorArray(invertedImage, position));
+        enlargeRequest.addColorArray(new NumberedColorArray(invertedImage, position));
     }
 }
