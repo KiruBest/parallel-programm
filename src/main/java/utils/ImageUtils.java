@@ -13,6 +13,9 @@ public class ImageUtils {
     public static final String JPG_FORMAT = "jpg";
     public static final int[][] contrastMatrix = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
 
+    private static final int THRESHOLD = 100;
+    private static final int ENLARGE_STEP = 2;
+
     public static Color[][] extractBytes(String imageName) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(imageName));
         int width = bufferedImage.getWidth();
@@ -56,14 +59,14 @@ public class ImageUtils {
         int height = colorArray[0].length;
         Color[][] transformedColorArray = new Color[width - transformMatrixSize + 1][height - transformMatrixSize + 1];
 
-        for (int i = 0; i <= width - 3; i++) {
-            for (int j = 0; j <= height - 3; j++) {
+        for (int i = 0; i <= width - transformMatrixSize; i++) {
+            for (int j = 0; j <= height - transformMatrixSize; j++) {
                 int bufferR = 0;
                 int bufferB = 0;
                 int bufferG = 0;
 
-                for (int x = i; x < i + 3; x++) {
-                    for (int y = j; y < j + 3; y++) {
+                for (int x = i; x < i + transformMatrixSize; x++) {
+                    for (int y = j; y < j + transformMatrixSize; y++) {
                         Color sourceColor = colorArray[x][y];
                         int multiplyValue = transformMatrix[x - i][y - j];
 
@@ -84,6 +87,38 @@ public class ImageUtils {
         return transformedColorArray;
     }
 
+    public static Color[][] enlargeImage(Color[][] colorArray) {
+        int width = colorArray.length;
+        int height = colorArray[0].length;
+        Color[][] resultColorArray = new Color[width][height];
+
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                Color color = colorArray[i][j];
+                int intensity = getIntensity(color);
+
+                if (intensity >= THRESHOLD) {
+                    int startX = i - ENLARGE_STEP;
+                    int startY = j - ENLARGE_STEP;
+                    int endX = i + ENLARGE_STEP;
+                    int endY = j + ENLARGE_STEP;
+
+                    for (int x = startX; x < endX; ++x) {
+                        for (int y = startY; y < endY; ++y) {
+                            if (x >= 0 && y >= 0 && x < width && y < height) {
+                                resultColorArray[x][y] = Color.WHITE;
+                            }
+                        }
+                    }
+                } else if (resultColorArray[i][j] == null) {
+                    resultColorArray[i][j] = Color.BLACK;
+                }
+            }
+        }
+
+        return resultColorArray;
+    }
+
     public static void saveImage(Color[][] colorArray, String fileName) throws IOException {
         int width = colorArray.length;
         int height = colorArray[0].length;
@@ -97,5 +132,13 @@ public class ImageUtils {
         }
 
         ImageIO.write(bufferedImage, JPG_FORMAT, new File(fileName));
+    }
+
+    private static int getIntensity(Color color) {
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        return (r + g + b) / 3;
     }
 }

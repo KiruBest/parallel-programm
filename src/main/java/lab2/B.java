@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 
 import static constants.Path.*;
 
-public class A {
+public class B {
     private static final int THREAD_COUNT = 1;
 
     public static void main(String[] args) {
@@ -41,27 +41,22 @@ public class A {
         Color[][] colorArray = ImageUtils.extractBytes(IMG_PATH + fileName);
 
         Request invertedRequest = new Request();
-        Request contrastedRequest = new Request();
 
-        long time = System.currentTimeMillis();
+        long time = System.nanoTime();
 
         ExecutorService executor = ThreadExtensions.createThreads(
                 colorArray,
                 THREAD_COUNT,
-                (part, position) -> new ProcessorA(part, position, invertedRequest, contrastedRequest)
+                (part, position) -> new ProcessorB(part, position, invertedRequest)
         );
 
         boolean isSuccess = ThreadExtensions.awaitAllThreads(executor);
 
         if (isSuccess) {
-            System.out.println("Время обработки = " + (System.currentTimeMillis() - time) + "\n");
+            System.out.println("Время обработки = " + (System.nanoTime() - time) + "\n");
             ImageUtils.saveImage(
                     invertedRequest.getColorArray(),
-                    IMG_PATH + INVERTED_IMG_PATH + fileName
-            );
-            ImageUtils.saveImage(
-                    contrastedRequest.getColorArray(),
-                    IMG_PATH + CONTRAST_IMG_PATH + fileName
+                    IMG_PATH + ENLARGE_IMG_PATH + fileName
             );
         }
     }
