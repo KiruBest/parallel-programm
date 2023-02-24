@@ -15,7 +15,7 @@ public class ImageUtils {
     public static final int[][] contrastMatrix = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
 
     private static final int THRESHOLD = 100;
-    private static final int ENLARGE_STEP = 10;
+    private static final int ENLARGE_STEP = 2;
 
     public static Color[][] extractBytes(String imageName) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(imageName));
