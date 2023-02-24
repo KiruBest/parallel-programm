@@ -21,7 +21,7 @@ public class C {
         try {
 //            Все количества кластеров и потоков для выполнения за один билд
             List<Integer> kList = new ArrayList<>(List.of(3));
-            List<Integer> threadNumbers = new ArrayList<>(List.of(1, 2, 4, 6, 8, 10, 12, 14, 16));
+            List<Integer> threadNumbers = new ArrayList<>(List.of(16));
 
             ArrayList<ArrayList<double[]>> clusters;
 
