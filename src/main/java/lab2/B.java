@@ -64,10 +64,10 @@ public class B {
 
         if (isSuccess) {
             System.out.println("Время обработки = " + (System.currentTimeMillis() - time) + "\n");
-//            ImageUtils.saveImage(
-//                    enlargeRequest.getColorArray(),
-//                    IMG_PATH + ENLARGE_IMG_PATH + fileName
-//            );
+            ImageUtils.saveImage(
+                    enlargeRequest.getColorArray(),
+                    IMG_PATH + ENLARGE_IMG_PATH + fileName
+            );
         }
     }
 }
