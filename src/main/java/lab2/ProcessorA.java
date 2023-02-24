@@ -7,6 +7,7 @@ import utils.Request;
 import java.awt.*;
 import java.io.IOException;
 
+//Процессор для многопоточного вычисления задания A
 class ProcessorA implements Runnable {
     private final Color[][] colorArray;
     private final int position;

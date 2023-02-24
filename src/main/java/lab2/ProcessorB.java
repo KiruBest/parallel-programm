@@ -6,6 +6,7 @@ import utils.Request;
 
 import java.awt.*;
 
+//Процессор для многопоточного вычисления задания Б
 class ProcessorB implements Runnable {
     private final Color[][] colorArray;
     private final int position;

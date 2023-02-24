@@ -8,13 +8,14 @@ import java.io.IOException;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
+//Утилиты для считывания, сохранения, преобразования картинок
 public class ImageUtils {
     public static final int I_MAX = 255;
     public static final String JPG_FORMAT = "jpg";
     public static final int[][] contrastMatrix = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
 
     private static final int THRESHOLD = 100;
-    private static final int ENLARGE_STEP = 2;
+    private static final int ENLARGE_STEP = 10;
 
     public static Color[][] extractBytes(String imageName) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(imageName));
