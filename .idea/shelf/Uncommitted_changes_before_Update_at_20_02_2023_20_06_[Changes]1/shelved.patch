@@ -1,0 +1,76 @@
+Index: src/main/java/constants/Path.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package constants;\r\n\r\npublic class Path {\r\n    public static final String IMG_PATH = \"D:\\\\Programmist\\\\Java\\\\Works\\\\parallel-programm\\\\src\\\\main\\\\java\\\\img\\\\\";\r\n    public static final String INVERTED_IMG_PATH = \"inverted\\\\\";\r\n    public static final String CONTRAST_IMG_PATH = \"contrasted\\\\\";\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/constants/Path.java b/src/main/java/constants/Path.java
+--- a/src/main/java/constants/Path.java	
++++ b/src/main/java/constants/Path.java	
+@@ -1,7 +1,7 @@
+ package constants;
+ 
+ public class Path {
+-    public static final String IMG_PATH = "D:\\Programmist\\Java\\Works\\parallel-programm\\src\\main\\java\\img\\";
++    public static final String IMG_PATH = "E:\\projects\\parallel-programm-1\\src\\main\\java\\img\\";
+     public static final String INVERTED_IMG_PATH = "inverted\\";
+     public static final String CONTRAST_IMG_PATH = "contrasted\\";
+ }
+Index: src/main/java/lab2/A.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package lab2;\r\n\r\nimport utils.ImageUtils;\r\n\r\nimport java.awt.*;\r\nimport java.io.File;\r\nimport java.io.IOException;\r\nimport java.util.Arrays;\r\nimport java.util.Objects;\r\nimport java.util.concurrent.ExecutorService;\r\nimport java.util.concurrent.Executors;\r\nimport java.util.concurrent.TimeUnit;\r\n\r\nimport static constants.Path.*;\r\n\r\npublic class A {\r\n    private static final int THREAD_COUNT = 8;\r\n\r\n    static class ImageProcessor implements Runnable {\r\n        private final Color[][] colorArray;\r\n        private final int position;\r\n        private final Request invertedRequest;\r\n        private final Request contrastedRequest;\r\n\r\n        ImageProcessor(Color[][] colorArray, int position, Request invertedRequest, Request contrastedRequest) {\r\n            this.colorArray = colorArray;\r\n            this.position = position;\r\n            this.invertedRequest = invertedRequest;\r\n            this.contrastedRequest = contrastedRequest;\r\n        }\r\n\r\n        @Override\r\n        public void run() {\r\n            try {\r\n                Color[][] invertedImage = ImageUtils.invertedImage(colorArray);\r\n                Color[][] contrastedImage = ImageUtils.transformImage(colorArray, ImageUtils.contrastMatrix);\r\n                invertedRequest.addColorArray(new NumberedColorArray(invertedImage, position));\r\n                contrastedRequest.addColorArray(new NumberedColorArray(contrastedImage, position));\r\n            } catch (IOException e) {\r\n                e.printStackTrace();\r\n            }\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) {\r\n        try {\r\n            File imgFolder = new File(IMG_PATH);\r\n            File[] listOfFiles = Objects.requireNonNull(imgFolder.listFiles());\r\n\r\n            for (int i = 1; i <= 3; i++) {\r\n                System.out.println(\"#\" + i + \"\\n\");\r\n\r\n                for (File file : listOfFiles) {\r\n                    if (file.isFile()) {\r\n                        String fileName = file.getName();\r\n                        execute(fileName);\r\n                    }\r\n                }\r\n            }\r\n        } catch (IOException | NullPointerException | InterruptedException e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    private static void execute(String fileName) throws IOException, InterruptedException {\r\n        System.out.println(\"Обработка файла: \" + fileName + \"...\");\r\n\r\n        Color[][] colorArray = ImageUtils.extractBytes(IMG_PATH + fileName);\r\n\r\n        Request invertedRequest = new Request();\r\n        Request contrastedRequest = new Request();\r\n\r\n        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);\r\n\r\n        long time = System.currentTimeMillis();\r\n\r\n        int partWidth = colorArray.length / THREAD_COUNT;\r\n        for (int j = 0; j < THREAD_COUNT; j++) {\r\n            int startPosition = partWidth * j;\r\n            int endPosition = partWidth * j + partWidth;\r\n            Color[][] part = Arrays.copyOfRange(colorArray, startPosition, endPosition);\r\n\r\n            Runnable processor = new ImageProcessor(part, j, invertedRequest, contrastedRequest);\r\n            executor.execute(processor);\r\n        }\r\n\r\n        executor.shutdown();\r\n        boolean isSuccess = executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);\r\n\r\n        if (isSuccess) {\r\n            System.out.println(\"Время обработки = \" + (System.currentTimeMillis() - time) + \"\\n\");\r\n            ImageUtils.saveImage(\r\n                    invertedRequest.getColorArray(),\r\n                    IMG_PATH + INVERTED_IMG_PATH + fileName\r\n            );\r\n            ImageUtils.saveImage(\r\n                    contrastedRequest.getColorArray(),\r\n                    IMG_PATH + CONTRAST_IMG_PATH + fileName\r\n            );\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/lab2/A.java b/src/main/java/lab2/A.java
+--- a/src/main/java/lab2/A.java	
++++ b/src/main/java/lab2/A.java	
+@@ -14,7 +14,7 @@
+ import static constants.Path.*;
+ 
+ public class A {
+-    private static final int THREAD_COUNT = 8;
++    private static final int THREAD_COUNT = 4;
+ 
+     static class ImageProcessor implements Runnable {
+         private final Color[][] colorArray;
+@@ -35,6 +35,7 @@
+                 Color[][] invertedImage = ImageUtils.invertedImage(colorArray);
+                 Color[][] contrastedImage = ImageUtils.transformImage(colorArray, ImageUtils.contrastMatrix);
+                 invertedRequest.addColorArray(new NumberedColorArray(invertedImage, position));
++                System.out.println(Thread.currentThread().getName());
+                 contrastedRequest.addColorArray(new NumberedColorArray(contrastedImage, position));
+             } catch (IOException e) {
+                 e.printStackTrace();
+Index: .idea/.gitignore
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+--- a/.idea/.gitignore	
++++ /dev/null	
+@@ -1,4 +0,0 @@
+-# Default ignored files
+-/shelf/
+-/workspace.xml
+-misc.xml
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <bytecodeTargetLevel target=\"11\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	
++++ b/.idea/compiler.xml	
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="11" />
++    <bytecodeTargetLevel target="16" />
+   </component>
+ </project>
+\ No newline at end of file

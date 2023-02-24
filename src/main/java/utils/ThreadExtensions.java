@@ -1,13 +1,15 @@
 package utils;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+// Небольшие расширения для создания ExecutorService, который выполняет callback в заданиях А и Б
 public class ThreadExtensions {
-    public static ExecutorService createThreads(
+    public static ExecutorService createColorArrayDependableThreads(
             Color[][] colorArray,
             int threadCount,
             ProcessorRunnableCallback callback) {

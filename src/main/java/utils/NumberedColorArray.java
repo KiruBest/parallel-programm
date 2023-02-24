@@ -3,6 +3,7 @@ package utils;
 import java.awt.*;
 import java.util.Comparator;
 
+//Массив цветов который запоминает свое место в картинке
 public class NumberedColorArray {
     private Color[][] colorArray;
     private int position;

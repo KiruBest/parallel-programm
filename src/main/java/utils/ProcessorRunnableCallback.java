@@ -2,6 +2,7 @@ package utils;
 
 import java.awt.*;
 
+//Небольшая абстракция над выполняемыми процессорами
 public interface ProcessorRunnableCallback {
-    Runnable createProcessorRunnable(Color[][] part, int position);
+     <T> Runnable createProcessorRunnable(T part, int position);
 }

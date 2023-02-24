@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+//Класс для получения и хранения общего контейнера для всех потоков
 public class Request {
     private final ArrayList<NumberedColorArray> numberedColorArrayList = new ArrayList<>();
 
