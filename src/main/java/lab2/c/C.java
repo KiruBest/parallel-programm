@@ -20,8 +20,8 @@ public class C {
 
         try {
 //            Все количества кластеров и потоков для выполнения за один билд
-            List<Integer> kList = new ArrayList<>(List.of(5));
-            List<Integer> threadNumbers = new ArrayList<>(List.of(2));
+            List<Integer> kList = new ArrayList<>(List.of(3));
+            List<Integer> threadNumbers = new ArrayList<>(List.of(1, 2, 4, 6, 8, 10, 12, 14, 16));
 
             ArrayList<ArrayList<double[]>> clusters;
 
@@ -52,14 +52,17 @@ public class C {
                         numberOfDotsPerThread++;
                     }
                     ArrayList<double[]> dots = new ArrayList<>();
+                    ArrayList<ArrayList<double[]>> clustersForThread = new ArrayList<>();
                     ExecutorService executor = Executors.newFixedThreadPool(threadNumber);
 //                    Собираем точки в группы по numberOfDotsPerThread и запускаем поток, обрабатывающий эти точки
                     for (int j = 0; j < numberOfClusters; j++) {
                         for (int k = 0; k < clusters.get(j).size(); k++) {
                             dots.add(clusters.get(j).get(k));
+                            clustersForThread.add(clusters.get(j));
                             if (dots.size() == numberOfDotsPerThread) {
                                 executor.execute(new ProcessorNumerator(dots, clusters.get(j), clusterRequest));
                                 dots.clear();
+                                clustersForThread.clear();
                             }
                         }
                     }
@@ -75,14 +78,14 @@ public class C {
                         System.out.println("Время обработки = " + (System.currentTimeMillis() - time));
                         System.out.println("Оценка точности: " + clusterRequest.getResult());
                         for (double[] center : kmeans.center) {
-                            System.out.println("Центр кластера [" + kmeans.center.indexOf(center) + "] " + Arrays.toString(center));
+                            System.out.println("Центр кластера [" + (kmeans.center.indexOf(center) + 1) + "] " + Arrays.toString(center));
                         }
 
 //                        Смотрим график
                         ArrayList<Double> cordX = new ArrayList<>();
                         ArrayList<Double> cordY = new ArrayList<>();
                         ArrayList<Color> colors = new ArrayList<>();
-                        ArrayList<Color> colorChoice = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.ORANGE, Color.BLACK));
+                        ArrayList<Color> colorChoice = new ArrayList<>(List.of(Color.RED, Color.MAGENTA, Color.CYAN, Color.ORANGE, Color.BLUE));
                         for (ArrayList<double[]> cluster : clusters) {
                             for (double[] dot : cluster) {
                                 cordX.add(dot[0]);
