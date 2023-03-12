@@ -1,0 +1,68 @@
+const sampler_t samplerIn =
+    CLK_NORMALIZED_COORDS_FALSE |
+    CLK_ADDRESS_CLAMP |
+    CLK_FILTER_NEAREST;
+
+const sampler_t samplerOut = 
+    CLK_NORMALIZED_COORDS_FALSE |
+    CLK_ADDRESS_CLAMP |
+    CLK_FILTER_NEAREST;
+
+const int I_MAX = 255;
+
+int contrastMatrixSize = 3;
+int contrastMatrix[3][3] = {{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}};
+
+__kernel void transformImage(
+    __read_only image2d_t sourceImage,
+    __write_only image2d_t contrastedImage)
+{
+    int2 coord = (int2)(get_global_id(0), get_global_id(1));
+    int i = coord.x;
+    int j = coord.y;
+
+    int bufferR = 0;
+    int bufferG = 0;
+    int bufferB = 0;
+
+    for (int x = i; x < i + contrastMatrixSize; ++x)
+    {
+        for (int y = j; y < j + contrastMatrixSize; ++y)
+        {
+            uint4 pixel = read_imageui(sourceImage, samplerIn, (int2) (x, y));
+            int multiplyValue = contrastMatrix[x - i][y - j];
+
+            bufferR += pixel.x * multiplyValue;
+            bufferG += pixel.y * multiplyValue;
+            bufferB += pixel.z * multiplyValue;
+        }
+    }
+
+    if(bufferR > I_MAX) {
+        bufferR = I_MAX;
+    }
+
+    if(bufferG > I_MAX) {
+        bufferG = I_MAX;
+    }
+
+    if(bufferB > I_MAX) {
+        bufferB = I_MAX;
+    }
+
+    uint4 newPixel = (uint4) (abs(bufferR), abs(bufferG), abs(bufferB), 0);
+
+    //printf("v = { %u, %u, %u, %u }\n", newPixel.x, newPixel.y, newPixel.z, newPixel.w);
+
+    write_imageui(contrastedImage, coord, newPixel);
+}
+
+__kernel void invertImage(
+    __read_only image2d_t sourceImage,
+    __write_only image2d_t invertedImage)
+{
+    int2 coord = (int2)(get_global_id(0), get_global_id(1));
+    uint4 pixel = read_imageui(sourceImage, samplerIn, coord);
+    uint4 invertedPixel = (uint4) (I_MAX - pixel.x, I_MAX - pixel.y, I_MAX - pixel.z, 0);
+    write_imageui(invertedImage, coord, invertedPixel);
+}

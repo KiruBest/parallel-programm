@@ -58,10 +58,12 @@ public class ImageUtils {
         int transformMatrixSize = transformMatrix.length;
         int width = colorArray.length;
         int height = colorArray[0].length;
-        Color[][] transformedColorArray = new Color[width - transformMatrixSize + 1][height - transformMatrixSize + 1];
+        int transformWidth = width - transformMatrixSize + 1;
+        int transformHeight = height - transformMatrixSize + 1;
+        Color[][] transformedColorArray = new Color[transformWidth][transformHeight];
 
-        for (int i = 0; i <= width - transformMatrixSize; i++) {
-            for (int j = 0; j <= height - transformMatrixSize; j++) {
+        for (int i = 0; i < transformWidth; i++) {
+            for (int j = 0; j < transformHeight; j++) {
                 int bufferR = 0;
                 int bufferB = 0;
                 int bufferG = 0;
@@ -135,11 +137,58 @@ public class ImageUtils {
         ImageIO.write(bufferedImage, JPG_FORMAT, new File(fileName));
     }
 
+    public static void saveImage(BufferedImage bufferedImage, String fileName) throws IOException {
+        ImageIO.write(bufferedImage, JPG_FORMAT, new File(fileName));
+    }
+
     private static int getIntensity(Color color) {
         int r = color.getRed();
         int g = color.getGreen();
         int b = color.getBlue();
 
         return (r + g + b) / 3;
+    }
+
+    /**
+     * Creates a BufferedImage of with type TYPE_INT_RGB from the
+     * file with the given name.
+     *
+     * @param fileName The file name
+     * @return The image, or null if the file may not be read
+     */
+    public static BufferedImage createBufferedImage(String fileName) {
+        BufferedImage image;
+        try {
+            image = ImageIO.read(new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        int sizeX = image.getWidth();
+        int sizeY = image.getHeight();
+
+        BufferedImage result = new BufferedImage(
+                sizeX, sizeY, BufferedImage.TYPE_INT_RGB);
+        Graphics g = result.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return result;
+    }
+
+    public static int[][] getIntensityMatrixFromBufferedImage(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        int[][] intensityMatrix = new int[width][height];
+
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                Color color = new Color(image.getRGB(i, j));
+                intensityMatrix[i][j] = getIntensity(color);
+            }
+        }
+
+        return intensityMatrix;
     }
 }

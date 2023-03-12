@@ -16,7 +16,7 @@ public class DataSetProvider {
     public static List<Double> listY = new ArrayList<>();
 
     public static ArrayList<double[]> getDataSet(String strColumnX, String strColumnY) throws IOException, CsvException {
-        FileReader fileReader = new FileReader(Path.BD_PATIENTS_CSV_PATH);
+        FileReader fileReader = new FileReader(Path.NATIVE_CODE_PATH);
         CSVReader csvReader = new CSVReader(fileReader);
 //        С помощью библиотеки получаем строки файла, однако можно было сделать это и в ручную
         List<String[]> list = csvReader.readAll();
